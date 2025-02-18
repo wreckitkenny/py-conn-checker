@@ -1,4 +1,5 @@
-import json
+import json, requests
+import os
 
 def create_namespaced_pod(client, namespace, pod_name, body):
     try:
@@ -21,7 +22,7 @@ def delete_namespaced_pod(client, namespace, pod_name):
         print("[{}] {}".format(namespace, json.loads(e.body)['message']))
     return False
 
-def exec_namespaced_pod(client, stream, namespace, pod_name, dst_name, dst_port):
+def exec_namespaced_pod(client, stream, cluster_name, namespace, pod_name, src_name, dst_name, dst_port):
     # command = "telnet {} {}".format(dst_name, dst_port)
     command = ("curl --telnet-option BOGUS=1 --connect-timeout 3 -s -v telnet://{}:{} 2>&1 | egrep -v 'Unknown telnet "
                "option|Closing connection'").format(dst_name, dst_port)
@@ -34,7 +35,14 @@ def exec_namespaced_pod(client, stream, namespace, pod_name, dst_name, dst_port)
         response.update(timeout=1)
 
     response.close()
-    commandOutput = (">>>>>>>>>>>>>>>>>> [{}] {}:{}".format(namespace, dst_name, dst_port)
+
+    sign = "💥"
+    x = requests.get(os.getenv("HAPROXY_ADDR") + "/v3/services/haproxy/stats/native", auth=(os.getenv("HAPROXY_USER"), os.getenv("HAPROXY_PASS")))
+    listOfBackend = [ i['name'] for i in x.json()['stats'] if 'backend_name' in i]
+    if dst_name in listOfBackend:
+        sign = "💯"
+
+    commandOutput = (">>>>>>>>>> [{}/{}] From {} to {}:{} {}".format(cluster_name, namespace, src_name, dst_name, dst_port, sign)
                       + "\n" + "{}".format(response.read_stdout().strip()))
                       # + "\n" + "STDOUT>>\n{}".format(response.read_stdout().strip())
                       # + "\n" + "STDERR>>\n{}".format(response.read_stderr().strip()))

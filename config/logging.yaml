@@ -1,0 +1,25 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  json:
+    (): checker.MyJSONFormatter
+    fmt_keys:
+      timestamp: timestamp
+      level: levelname
+      message: message
+      module: module
+      function: funcName
+      line: lineno
+      thread_name: threadName
+      logger_name: name
+handlers:
+  stdout:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: json
+    stream: ext://sys.stdout
+loggers:
+  root:
+    level: INFO
+    handlers:
+    - stdout

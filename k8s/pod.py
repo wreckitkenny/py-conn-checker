@@ -1,5 +1,6 @@
-import json, requests
-import os
+import json, requests, os, logging
+
+logger = logging.getLogger(os.path.dirname(__file__).split("/")[-1])
 
 def create_namespaced_pod(client, namespace, pod_name, body):
     try:
@@ -10,7 +11,7 @@ def create_namespaced_pod(client, namespace, pod_name, body):
                 break
         return True
     except client.exceptions.ApiException as e:
-        print("[{}] {}.".format(namespace, json.loads(e.body)['message']))
+        logger.error("[{}] {}.".format(namespace, json.loads(e.body)['message']))
     return False
 
 def delete_namespaced_pod(client, namespace, pod_name):
@@ -19,7 +20,7 @@ def delete_namespaced_pod(client, namespace, pod_name):
                                                  body=client.V1DeleteOptions(grace_period_seconds=0))
         return True
     except client.exceptions.ApiException as e:
-        print("[{}] {}".format(namespace, json.loads(e.body)['message']))
+        logger.error("[{}] {}".format(namespace, json.loads(e.body)['message']))
     return False
 
 def exec_namespaced_pod(client, stream, cluster_name, namespace, pod_name, src_name, dst_name, dst_port):
@@ -37,7 +38,9 @@ def exec_namespaced_pod(client, stream, cluster_name, namespace, pod_name, src_n
     response.close()
 
     sign = "💥"
-    x = requests.get(os.getenv("HAPROXY_ADDR") + "/v3/services/haproxy/stats/native", auth=(os.getenv("HAPROXY_USER"), os.getenv("HAPROXY_PASS")))
+    x = requests.get(os.getenv("HAPROXY_ADDR", default="http://127.0.0.1:5555") + "/v3/services/haproxy/stats/native",
+                     auth=(os.getenv("HAPROXY_USER", default="admin"),
+                           os.getenv("HAPROXY_PASS", default="default")))
     listOfBackend = [ i['name'] for i in x.json()['stats'] if 'backend_name' in i]
     if dst_name in listOfBackend:
         sign = "💯"

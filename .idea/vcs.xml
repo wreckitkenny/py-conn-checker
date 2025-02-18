@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../Others/pyGraylog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../cleanGmail" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../logging" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../pyConnController" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../pyDeployApp" vcs="Git" />
   </component>
 </project>

@@ -4,7 +4,7 @@ import json, logging, os
 
 logger = logging.getLogger(os.path.dirname(__file__).split("/")[-1])
 
-def request_handler(json_request,pod_name="connection-checker"):
+def request_handler(json_request):
     # Create a namespaced pod
     execOutList = list()
     cluster_name = json_request["cluster_name"].rstrip()
@@ -12,9 +12,11 @@ def request_handler(json_request,pod_name="connection-checker"):
     srcName = json_request["src_name"].rstrip()
     dstName = json_request["dst_name"].rstrip()
     dstPort = json_request["dst_port"].rstrip()
+    pod_name = "checking-from-{}-to-{}-port-{}".format(srcName, dstName, dstPort)
     with open('templates/pod.json') as json_file:
         body = json.load(json_file)
         body['metadata']['labels']['app.kubernetes.io/name'] = srcName
+        body['metadata']['name'] = pod_name
 
     # print("[{}] Creating a connection checker pod named [{}].".format(namespace, pod_name))
     logger.info("[{}] Creating a connection checker pod named [{}].".format(namespace, pod_name))

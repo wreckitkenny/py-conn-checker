@@ -12,6 +12,7 @@ def ping(): return "pong!"
 def check_connection():
     jsonRequest = request.get_json()
     logger.info("Handling a request: {}".format(jsonRequest))
+    print(jsonRequest)
     return request_handler(json_request=jsonRequest)
 
 if __name__ == '__main__':

@@ -37,15 +37,15 @@ def exec_namespaced_pod(client, stream, cluster_name, namespace, pod_name, src_n
 
     response.close()
 
-    sign = "💥"
-    x = requests.get(os.getenv("HAPROXY_ADDR", default="http://127.0.0.1:5555") + "/v3/services/haproxy/stats/native",
-                     auth=(os.getenv("HAPROXY_USER", default="admin"),
-                           os.getenv("HAPROXY_PASS", default="default")))
-    listOfBackend = [ i['name'] for i in x.json()['stats'] if 'backend_name' in i]
-    if dst_name in listOfBackend:
-        sign = "💯"
+    # sign = "💥"
+    # x = requests.get(os.getenv("HAPROXY_ADDR", default="http://127.0.0.1:5555") + "/v3/services/haproxy/stats/native",
+    #                  auth=(os.getenv("HAPROXY_USER", default="admin"),
+    #                        os.getenv("HAPROXY_PASS", default="default")))
+    # listOfBackend = [ i['name'] for i in x.json()['stats'] if 'backend_name' in i]
+    # if dst_name in listOfBackend:
+    #     sign = "💯"
 
-    commandOutput = (">>>>>>>>>> [{}/{}] From {} to {}:{} {}".format(cluster_name, namespace, src_name, dst_name, dst_port, sign)
+    commandOutput = (">>>>>>>>>> [{}/{}] From {} to {}:{}".format(cluster_name, namespace, src_name, dst_name, dst_port)
                       + "\n" + "{}".format(response.read_stdout().strip()))
                       # + "\n" + "STDOUT>>\n{}".format(response.read_stdout().strip())
                       # + "\n" + "STDERR>>\n{}".format(response.read_stderr().strip()))

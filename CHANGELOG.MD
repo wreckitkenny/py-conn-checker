@@ -1,6 +1,13 @@
 # pyConnChecker - Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] | 2026-06-04
+### Added/Removed
+- Temporarily remove checking request to HAProxy
+### Changed
+- Improve request handler
+### Fixed
+
 ## [1.0.2] | 2025-02-20
 ### Added/Removed
 ### Changed
